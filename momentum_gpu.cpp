@@ -134,12 +134,12 @@ int printSystemInfo() {
 		std::vector< cl::Platform > platformList;
 		cl::Platform::get(&platformList);
 		if (platformList.size() == 0)
-			throw std::exception("Getting platforms");
+			throw std::runtime_error("Getting platforms");
 		std::cout << platformList.size() << " OpenCL computing platforms found" << std::endl;
 		for(unsigned int i = 0; i < platformList.size(); i++) {
 			std::string name;
 			if(platformList[i].getInfo(CL_PLATFORM_NAME, &name) != CL_SUCCESS)
-				throw std::exception("Getting platform info");
+				throw std::runtime_error("Getting platform info");
 			std::cout << "[" << i << "] " << name << std::endl;
 			std::cout << "GPU OpenCl Devices on this platform: " << std::endl;
 
@@ -147,16 +147,16 @@ int printSystemInfo() {
 				std::vector<cl::Device> devices;
 				//Query the platform and list gpu devices
 				if(platformList[p].getDevices(CL_DEVICE_TYPE_GPU, &devices) != CL_SUCCESS)
-					throw std::exception("Getting device info");
+					throw std::runtime_error("Getting device info");
 				for(unsigned int d = 0; d < devices.size(); d++) {
 					std::string deviceName;
 					cl_ulong maxMemSize, maxBufSize;
 					if(devices[d].getInfo(CL_DEVICE_NAME, &deviceName) != CL_SUCCESS)
-						throw std::exception("Getting device name");
+						throw std::runtime_error("Getting device name");
 					if(devices[d].getInfo(CL_DEVICE_GLOBAL_MEM_SIZE, &maxMemSize) != CL_SUCCESS)
-						throw std::exception("Getting device max buffer size");
+						throw std::runtime_error("Getting device max buffer size");
 					if(devices[d].getInfo(CL_DEVICE_MAX_MEM_ALLOC_SIZE, &maxBufSize) != CL_SUCCESS)
-						throw std::exception("Getting device global memory size");
+						throw std::runtime_error("Getting device global memory size");
 					unsigned int maxMemoryMB = 0;
 					if(maxBufSize >= 256*1024*1024 && maxMemSize >= 300*1024*1024)
 						maxMemoryMB = 288;
@@ -171,7 +171,7 @@ int printSystemInfo() {
 			}
 		}
 	}
-	catch (std::exception &e) {
+	catch (std::runtime_error &e) {
 		std::cerr << "ERROR: " << e.what() << std::endl;
 		return -1;
 	}
@@ -275,7 +275,7 @@ int main(int argc, char* argv[]) {
 		delete _worker;
 		return SUCCESS;
 	}
-	catch (std::exception &e) {
+	catch (std::runtime_error &e) {
 		std::cerr << "Top level exception " << e.what() << std::endl;
 		return -1;
 	}
