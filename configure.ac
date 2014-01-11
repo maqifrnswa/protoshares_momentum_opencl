@@ -11,6 +11,8 @@ AC_PROG_CXX
 AC_PROG_CC
 
 # Checks for libraries.
+AC_SEARCH_LIBS([clGetPlatformIDs], [OpenCL],
+    [], [AC_MSG_ERROR(OpenCL lib was not found)])
 
 # Checks for header files.
 AC_CHECK_HEADERS([stdlib.h string.h sys/time.h])
